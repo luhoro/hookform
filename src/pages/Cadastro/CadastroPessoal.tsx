@@ -1,4 +1,12 @@
-import { Button, Label, Fieldset, Input, Form, Titulo } from "../../components"
+import {
+  Button,
+  Label,
+  Fieldset,
+  Input,
+  Form,
+  Titulo,
+  ErrorMessage,
+} from "../../components"
 import { useForm } from "react-hook-form"
 
 interface FormInputTipos {
@@ -10,10 +18,25 @@ interface FormInputTipos {
 }
 
 const CadastroPessoal = () => {
-  const { register, handleSubmit } = useForm<FormInputTipos>()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm<FormInputTipos>()
 
   const aoSubmeter = (dados: FormInputTipos) => {
     console.log(dados)
+  }
+
+  const senha = watch("senha")
+
+  const validaSenha = {
+    obrigatorio: (val: string) =>
+      !!val || "Por favor, insira a senha novamente",
+    tamanhoMinimo: (val: string) =>
+      val.length >= 8 || "A senha deve ter pelo menos 8 caractéres",
+    senhaIguais: (val: string) => val === senha || "As senhas não correspondem",
   }
 
   const validarEmail = (valor: string) => {
@@ -23,7 +46,6 @@ const CadastroPessoal = () => {
       console.error("Endereço de e-mail inválido para este domínio")
       return false
     }
-
     return true
   }
 
@@ -37,8 +59,16 @@ const CadastroPessoal = () => {
             id="campo-nome"
             placeholder="Digite seu nome completo"
             type="text"
-            {...register("nome", { required: true, minLength: 3 })}
+            $error={!!errors.nome}
+            {...register("nome", {
+              required: "O campo de nome é obrigatório",
+              minLength: {
+                value: 3,
+                message: "O nome deve vonter pelo menos 3 caractéres",
+              },
+            })}
           />
+          {errors.nome && <ErrorMessage>{errors.nome.message}</ErrorMessage>}
         </Fieldset>
 
         <Fieldset>
@@ -48,10 +78,11 @@ const CadastroPessoal = () => {
             placeholder="Insira seu endereço de email"
             type="email"
             {...register("email", {
-              required: true,
+              required: "O campo de e-mail é obrigatório",
               validate: validarEmail,
             })}
           />
+          {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
         </Fieldset>
 
         <Fieldset>
@@ -61,10 +92,16 @@ const CadastroPessoal = () => {
             type="text"
             placeholder="Ex: (DD) XXXXX-XXXX"
             {...register("telefone", {
-              pattern: /^\(\d{2,3}\) \d{5}-\d{4}$/,
-              required: true,
+              pattern: {
+                value: /^\(\d{2,3}\) \d{5}-\d{4}$/,
+                message: "O telefone inserido está no formato incorreto",
+              },
+              required: "O campo de telefone é obrigatório",
             })}
           />
+          {errors.telefone && (
+            <ErrorMessage>{errors.telefone.message}</ErrorMessage>
+          )}
         </Fieldset>
 
         <Fieldset>
@@ -73,8 +110,15 @@ const CadastroPessoal = () => {
             id="campo-senha"
             placeholder="Crie uma senha"
             type="password"
-            {...register("senha")}
+            {...register("senha", {
+              required: "O campo de senha é obrigatório",
+              minLength: {
+                value: 8,
+                message: "A senha deve ter pelo menos 8 caractéres",
+              },
+            })}
           />
+          {errors.senha && <ErrorMessage>{errors.senha.message}</ErrorMessage>}
         </Fieldset>
 
         <Fieldset>
@@ -83,8 +127,14 @@ const CadastroPessoal = () => {
             id="campo-senha-confirmacao"
             placeholder="Repita a senha anterior"
             type="password"
-            {...register("senhaVerificada")}
+            {...register("senhaVerificada", {
+              required: "Necessário repetir a senha neste campo",
+              validate: validaSenha,
+            })}
           />
+          {errors.senhaVerificada && (
+            <ErrorMessage>{errors.senhaVerificada.message}</ErrorMessage>
+          )}
         </Fieldset>
 
         <Button type="submit">Avançar</Button>
