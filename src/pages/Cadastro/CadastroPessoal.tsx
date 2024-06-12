@@ -77,6 +77,7 @@ const CadastroPessoal = () => {
             id="campo-email"
             placeholder="Insira seu endereço de email"
             type="email"
+            $error={!!errors.email}
             {...register("email", {
               required: "O campo de e-mail é obrigatório",
               validate: validarEmail,
@@ -91,6 +92,7 @@ const CadastroPessoal = () => {
             id="campo-telefone"
             type="text"
             placeholder="Ex: (DD) XXXXX-XXXX"
+            $error={!!errors.telefone}
             {...register("telefone", {
               pattern: {
                 value: /^\(\d{2,3}\) \d{5}-\d{4}$/,
@@ -110,6 +112,7 @@ const CadastroPessoal = () => {
             id="campo-senha"
             placeholder="Crie uma senha"
             type="password"
+            $error={!!errors.senha}
             {...register("senha", {
               required: "O campo de senha é obrigatório",
               minLength: {
@@ -127,6 +130,7 @@ const CadastroPessoal = () => {
             id="campo-senha-confirmacao"
             placeholder="Repita a senha anterior"
             type="password"
+            $error={!!errors.senhaVerificada}
             {...register("senhaVerificada", {
               required: "Necessário repetir a senha neste campo",
               validate: validaSenha,
