@@ -1,4 +1,5 @@
-import { useForm } from "react-hook-form"
+import { useForm, Controller } from "react-hook-form"
+import InputMask from "../../components/InputMask"
 import {
   Button,
   ErrorMessage,
@@ -9,6 +10,7 @@ import {
   Label,
   Titulo,
 } from "../../components"
+import { useEffect } from "react"
 
 interface FormInputEndereco {
   cep: string
@@ -25,20 +27,27 @@ const CadastroEndereco = () => {
     setError,
     setValue,
     watch,
-    formState: { errors },
+    formState: { errors, isSubmitSuccessful },
+    control,
+    reset,
   } = useForm<FormInputEndereco>({
     mode: "all",
     defaultValues: {
-      cep: '',
-      rua: '',
-      bairro: '',
-      numero: '',
-      localidade: '',
-    }
+      cep: "",
+      rua: "",
+      bairro: "",
+      numero: "",
+      localidade: "",
+    },
   })
+
+  useEffect(() => {
+    reset()
+  }, [isSubmitSuccessful, reset])
 
   const aoSubmeter = (dados: FormInputEndereco) => {
     console.log(dados)
+    alert('Dados do endereço enviados com sucesso!')
   }
 
   const cepDigitado = watch("cep")
@@ -75,7 +84,30 @@ const CadastroEndereco = () => {
     <>
       <Titulo>Agora, mais alguns dados sobre você:</Titulo>
       <Form onSubmit={handleSubmit(aoSubmeter)}>
-        <Fieldset>
+        <Controller
+          control={control}
+          name="cep"
+          rules={{
+            required: "O campo de cep é obrigatório",
+          }}
+          render={({ field }) => (
+            <Fieldset>
+              <Label>CEP</Label>
+              <InputMask
+                mask="99999-999"
+                id="campo-cep"
+                placeholder="Insira seu CEP"
+                type="text"
+                $error={!!errors.cep}
+                onChange={field.onChange}
+                onBlur={() => fetchEndereco(cepDigitado)}
+              />
+              {errors.cep && <ErrorMessage>{errors.cep.message}</ErrorMessage>}
+            </Fieldset>
+          )}
+        />
+
+        {/* <Fieldset>
           <Label htmlFor="campo-cep">CEP</Label>
           <Input
             id="campo-cep"
@@ -88,7 +120,7 @@ const CadastroEndereco = () => {
             onBlur={() => fetchEndereco(cepDigitado)}
           />
           {errors.cep && <ErrorMessage>{errors.cep.message}</ErrorMessage>}
-        </Fieldset>
+        </Fieldset> */}
 
         <Fieldset>
           <Label htmlFor="campo-rua">Rua</Label>

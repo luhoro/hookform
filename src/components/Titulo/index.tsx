@@ -6,7 +6,7 @@ const Titulo = styled.h1`
   line-height: 28px;
   color: var(--cinza);
   text-align: center;
-  margin: 1rem 0;
+  margin: 2rem 0;
 `;
 
 export default Titulo;

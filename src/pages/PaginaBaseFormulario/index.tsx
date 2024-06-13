@@ -5,7 +5,7 @@ const StyledContainer = styled.main`
   background-image: url(${backgroundImage});
   background-size: cover;
   width: 100vw;
-  height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
